@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pref_authentication_method_entries">
+        <item>@string/pref_login_form</item>
+        <item>@string/pref_basic_auth</item>
+    </array>
+    <array name="pref_authentication_method_values">
+        <item>@string/pref_authentication_method_login_form</item>
+        <item>@string/pref_authentication_method_basic_auth</item>
+    </array>
+</resources>

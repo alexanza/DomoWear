@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alexanza.fragments.NavigationDrawerFragment;
-import com.alexanza.fragments.SettingsFragment;
-import com.alexanza.utils.NetworkReachability;
+import com.alexanza.common.utils.NetworkReachability;
+import com.alexanza.domowear.fragments.NavigationDrawerFragment;
+import com.alexanza.domowear.fragments.SettingsFragment;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 //@TODO: get switches list
 public class MainActivity extends Activity
@@ -51,12 +58,24 @@ public class MainActivity extends Activity
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplication());
         if (settings.getString("pref_remote_url", "").isEmpty() && settings.getString("pref_local_url", "").isEmpty()) {
             goToSettings();
         } else if(settings.getString("pref_remote_url", "").isEmpty() && !NetworkReachability.getInstance().isLocal()) {
             goToSettings();
             Toast.makeText(this, R.string.toast_remote_url, Toast.LENGTH_LONG).show();
+        } else {
+            App.getApi().getSwitchesService().listSwitches(new Callback<List>() {
+                @Override
+                public void success(List list, Response response) {
+                    Log.d("mainActivity", list.toString());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
         }
     }
 
@@ -71,7 +90,7 @@ public class MainActivity extends Activity
 
     public void onSectionAttached(int number) {
         SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("settings_fragment");
-        if (settingsFragment == null || !settingsFragment.isVisible()) {
+        if (settingsFragment != null && settingsFragment.isVisible()) {
             mTitle = getString(R.string.action_settings);
             return;
         }
@@ -144,7 +163,7 @@ public class MainActivity extends Activity
         super.onBackPressed();
 
         SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("settings_fragment");
-        if (settingsFragment == null || !settingsFragment.isVisible()) {
+        if (settingsFragment != null && settingsFragment.isVisible()) {
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.setTitle(R.string.title_switches);

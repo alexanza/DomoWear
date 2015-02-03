@@ -1,4 +1,4 @@
-package com.alexanza.utils;
+package com.alexanza.common.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

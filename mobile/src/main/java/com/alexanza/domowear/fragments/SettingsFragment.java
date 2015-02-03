@@ -1,4 +1,4 @@
-package com.alexanza.fragments;
+package com.alexanza.domowear.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 
 import com.alexanza.domowear.R;
 
-import com.alexanza.utils.NetworkReachability;
+import com.alexanza.common.utils.NetworkReachability;
 
 public class SettingsFragment extends PreferenceFragment {
     @Override
@@ -18,9 +18,9 @@ public class SettingsFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplication());
         if (settings.getString("pref_local_wifi", "").isEmpty()
-                && NetworkReachability.getInstance().isNetworkAvailable(getActivity())
+                && NetworkReachability.getInstance().isNetworkAvailable(getActivity().getApplication())
                 && NetworkReachability.getInstance().isWifiConnected()) {
             EditTextPreference localWifi = (EditTextPreference) super.findPreference("pref_local_wifi");
             localWifi.setText(NetworkReachability.getInstance().getWifiSSID());

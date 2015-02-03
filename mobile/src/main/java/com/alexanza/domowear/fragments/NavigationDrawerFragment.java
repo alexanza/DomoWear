@@ -1,4 +1,4 @@
-package com.alexanza.fragments;
+package com.alexanza.domowear.fragments;
 
 
 import android.app.ActionBar;

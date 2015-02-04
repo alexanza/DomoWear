@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,7 +67,7 @@ public class MainActivity extends Activity
             App.getApi().getSwitchesService().listSwitches(new Callback<List>() {
                 @Override
                 public void success(List list, Response response) {
-                    Log.d("mainActivity", list.toString());
+
                 }
 
                 @Override

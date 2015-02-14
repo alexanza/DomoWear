@@ -25,7 +25,7 @@ public class RemoteRequestInterceptor implements RequestInterceptor {
         String username =  "";
         String password = "";
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        if (NetworkReachability.getInstance().isLocal(context)) {
+        if (NetworkReachability.getInstance().isLocal()) {
             username = settings.getString("pref_local_username", "");
             password = settings.getString("pref_local_password", "");
         } else {

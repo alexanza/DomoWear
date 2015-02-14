@@ -65,18 +65,15 @@ public class NetworkReachability extends BroadcastReceiver{
         }
     }
 
-    public boolean isMobileConnected(Context context) {
-        checkNetworkStatus(context);
+    public boolean isMobileConnected() {
         return isMobileConnected;
     }
 
-    public boolean isWifiConnected(Context context) {
-        checkNetworkStatus(context);
+    public boolean isWifiConnected() {
         return isWifiConnected;
     }
 
-    public boolean isLocal(Context context) {
-        checkNetworkStatus(context);
+    public boolean isLocal() {
         return isLocal;
     }
 

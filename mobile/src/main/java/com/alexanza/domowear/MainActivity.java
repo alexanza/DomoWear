@@ -2,7 +2,9 @@ package com.alexanza.domowear;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -60,7 +62,7 @@ public class MainActivity extends Activity
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplication());
         if (settings.getString("pref_remote_url", "").isEmpty() && settings.getString("pref_local_url", "").isEmpty()) {
             goToSettings();
-        } else if(settings.getString("pref_remote_url", "").isEmpty() && !NetworkReachability.getInstance().isLocal(this)) {
+        } else if(settings.getString("pref_remote_url", "").isEmpty() && !NetworkReachability.getInstance().isLocal()) {
             goToSettings();
             Toast.makeText(this, R.string.toast_remote_url, Toast.LENGTH_LONG).show();
         } else if (NetworkReachability.getInstance().isNetworkAvailable(this)) {
@@ -81,6 +83,22 @@ public class MainActivity extends Activity
                 }
             });
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(NetworkReachability.getInstance(), intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        unregisterReceiver(NetworkReachability.getInstance());
     }
 
     @Override

@@ -23,6 +23,6 @@
     <string name="pref_authentication_method_basic_auth">basic_auth</string>
     <string name="toast_remote_url">You are not connected to your local network, you need to setup your remote url to be able to use the app.</string>
     <string name="error_title">An error happen</string>
-    <string name="error_list_message">Can\'t retrieve the switches list</string>
+    <string name="error_list_message">Can\'t retrieve the switches list, maybe your server is down ?</string>
 
 </resources>

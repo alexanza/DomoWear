@@ -17,7 +17,7 @@ public class NetworkReachability extends BroadcastReceiver{
     private String wifiSSID;
     private boolean isLocal;
 
-    private NetworkReachability(){}
+    public NetworkReachability(){}
 
     public static NetworkReachability getInstance(){
         if(instance == null){
@@ -50,10 +50,9 @@ public class NetworkReachability extends BroadcastReceiver{
             if (isWifiConnected) {
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = wifiManager.getConnectionInfo ();
-                wifiSSID = info.getSSID();
-
+                wifiSSID = info.getSSID().replaceAll("^\"|\"$", "");
                 if (!settings.getString("pref_local_wifi", "").isEmpty()
-                    && wifiSSID == settings.getString("pref_local_wifi", "")) {
+                    && wifiSSID.equals(settings.getString("pref_local_wifi", ""))) {
                     isLocal = true;
                 }
             }
@@ -66,15 +65,18 @@ public class NetworkReachability extends BroadcastReceiver{
         }
     }
 
-    public boolean isMobileConnected() {
+    public boolean isMobileConnected(Context context) {
+        checkNetworkStatus(context);
         return isMobileConnected;
     }
 
-    public boolean isWifiConnected() {
+    public boolean isWifiConnected(Context context) {
+        checkNetworkStatus(context);
         return isWifiConnected;
     }
 
-    public boolean isLocal() {
+    public boolean isLocal(Context context) {
+        checkNetworkStatus(context);
         return isLocal;
     }
 

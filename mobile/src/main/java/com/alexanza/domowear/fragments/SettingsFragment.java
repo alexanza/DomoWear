@@ -20,8 +20,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplication());
         if (settings.getString("pref_local_wifi", "").isEmpty()
-                && NetworkReachability.getInstance().isNetworkAvailable(getActivity().getApplication())
-                && NetworkReachability.getInstance().isWifiConnected()) {
+                && NetworkReachability.getInstance().isWifiConnected(getActivity().getApplication())) {
             EditTextPreference localWifi = (EditTextPreference) super.findPreference("pref_local_wifi");
             localWifi.setText(NetworkReachability.getInstance().getWifiSSID());
         }

@@ -19,18 +19,18 @@ import retrofit.converter.GsonConverter;
 public class Api {
     private SwitchesService switchesService;
     private ToggleService toggleService;
+    private DynamicEndPoint endPoint;
 
     public Api(Context context) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
                 .create();
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String url = NetworkReachability.getInstance().isLocal() && !settings.getString("pref_local_url", "").isEmpty() ? settings.getString("pref_local_url", "") + ':' + settings.getString("pref_local_port", "") : settings.getString("pref_remote_url", "") + ':' + settings.getString("pref_remote_port", "");
+        updateUrl(context);
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint("http://" + url)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
+                .setEndpoint(endPoint)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(new RemoteRequestInterceptor(context))
                 .build();
@@ -45,5 +45,19 @@ public class Api {
 
     public ToggleService getToggleService() {
         return toggleService;
+    }
+
+    private void updateUrl(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String url = NetworkReachability.getInstance().isLocal(context) && !settings.getString("pref_local_url", "").isEmpty() ? settings.getString("pref_local_url", "") + ':' + settings.getString("pref_local_port", "") : settings.getString("pref_remote_url", "") + ':' + settings.getString("pref_remote_port", "");
+        String protocol = "http";
+
+        if ((url.equals(settings.getString("pref_local_url", "")) && settings.getBoolean("pref_local_secure", false))
+                || (url.equals(settings.getString("pref_remote_url", "")) && settings.getBoolean("pref_remote_secure", false))) {
+            protocol = "https";
+        }
+
+        endPoint = new DynamicEndPoint();
+        endPoint.setUrl(protocol + "://" + url);
     }
 }

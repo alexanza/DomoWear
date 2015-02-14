@@ -14,6 +14,7 @@ import com.alexanza.common.api.model.Switch;
 import com.alexanza.domowear.App;
 import com.alexanza.domowear.R;
 
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.Callback;
@@ -24,10 +25,11 @@ import retrofit.RetrofitError;
  */
 public class SwitchAdapter extends BaseAdapter {
     private final Context context;
-    private final List<Switch> switches;
+    private List<Switch> switches;
 
     public SwitchAdapter(Context context, List<Switch> switches) {
         this.context = context;
+        Collections.sort(switches);
         this.switches = switches;
     }
 
@@ -56,21 +58,23 @@ public class SwitchAdapter extends BaseAdapter {
 
         textView.setText(getItem(position).getName());
         toggleButton.setTag(getItem(position).getIdx());
+        toggleButton.setChecked(getItem(position).getStatus().equals("On") ? true : false);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 String idx = (String) buttonView.getTag();
                 String switchcmd = isChecked ? "On" : "Off";
 
                 App.getApi().getToggleService().toggle(idx, switchcmd, new Callback<Response>() {
                     @Override
                     public void success(Response response, retrofit.client.Response response2) {
-
+                        if (!response.getStatus().equals("OK"))
+                            buttonView.setChecked(!isChecked);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-
+                        buttonView.setChecked(!isChecked);
                     }
                 });
             }
@@ -78,5 +82,11 @@ public class SwitchAdapter extends BaseAdapter {
 
 
         return switchView;
+    }
+
+    public void refresh(List<Switch> switches) {
+        Collections.sort(switches);
+        this.switches = switches;
+        notifyDataSetChanged();
     }
 }

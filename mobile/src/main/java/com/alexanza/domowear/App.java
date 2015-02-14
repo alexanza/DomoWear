@@ -29,7 +29,7 @@ public class App extends Application {
 
     public static void setApi(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String url = NetworkReachability.getInstance().isLocal() ? settings.getString("pref_local_url", "") : settings.getString("pref_remote_url", "");
+        String url = NetworkReachability.getInstance().isLocal(context) ? settings.getString("pref_local_url", "") : settings.getString("pref_remote_url", "");
         if (!url.isEmpty()) {
             api = new Api(context);
         }

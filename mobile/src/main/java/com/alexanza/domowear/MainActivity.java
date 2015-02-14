@@ -2,22 +2,19 @@ package com.alexanza.domowear;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.alexanza.common.api.model.Switch;
 import com.alexanza.common.utils.NetworkReachability;
 import com.alexanza.domowear.fragments.NavigationDrawerFragment;
 import com.alexanza.domowear.fragments.SettingsFragment;
+import com.alexanza.domowear.fragments.SwitchesFragment;
 
 import java.util.List;
 
@@ -38,6 +35,7 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private SwitchesFragment switchesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +55,24 @@ public class MainActivity extends Activity
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
+        switchesFragment = new SwitchesFragment();
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplication());
         if (settings.getString("pref_remote_url", "").isEmpty() && settings.getString("pref_local_url", "").isEmpty()) {
             goToSettings();
-        } else if(settings.getString("pref_remote_url", "").isEmpty() && !NetworkReachability.getInstance().isLocal()) {
+        } else if(settings.getString("pref_remote_url", "").isEmpty() && !NetworkReachability.getInstance().isLocal(this)) {
             goToSettings();
             Toast.makeText(this, R.string.toast_remote_url, Toast.LENGTH_LONG).show();
-        } else {
-            App.getApi().getSwitchesService().listSwitches(new Callback<List>() {
+        } else if (NetworkReachability.getInstance().isNetworkAvailable(this)) {
+            App.getApi().getSwitchesService().listSwitches(new Callback<List<Switch>>() {
                 @Override
                 public void success(List list, Response response) {
+                    switchesFragment.switches = list;
 
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, switchesFragment, "switches_fragment")
+                            .addToBackStack("Switches")
+                            .commit();
                 }
 
                 @Override
@@ -81,10 +86,6 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
     }
 
     public void onSectionAttached(int number) {
@@ -146,7 +147,7 @@ public class MainActivity extends Activity
         SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("settings_fragment");
         if (settingsFragment == null || !settingsFragment.isVisible()) {
             getFragmentManager().beginTransaction()
-                    .add(android.R.id.content, new SettingsFragment(), "settings_fragment")
+                    .replace(android.R.id.content, new SettingsFragment(), "settings_fragment")
                     .addToBackStack("Settings")
                     .commit();
 
@@ -162,51 +163,11 @@ public class MainActivity extends Activity
         super.onBackPressed();
 
         SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("settings_fragment");
-        if (settingsFragment != null && settingsFragment.isVisible()) {
+        if (settingsFragment == null || !settingsFragment.isVisible()) {
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.setTitle(R.string.title_switches);
             }
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
 }

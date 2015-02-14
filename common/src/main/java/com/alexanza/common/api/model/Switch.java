@@ -2,36 +2,13 @@ package com.alexanza.common.api.model;
 
 import com.google.gson.annotations.Expose;
 
-public class Switch {
-
-    @Expose
-    private boolean IsDimmer;
+public class Switch implements Comparable {
     @Expose
     private String Name;
     @Expose
-    private String SubType;
-    @Expose
-    private String Type;
+    private String Status;
     @Expose
     private String idx;
-
-    /**
-     *
-     * @return
-     * The IsDimmer
-     */
-    public boolean isIsDimmer() {
-        return IsDimmer;
-    }
-
-    /**
-     *
-     * @param IsDimmer
-     * The IsDimmer
-     */
-    public void setIsDimmer(boolean IsDimmer) {
-        this.IsDimmer = IsDimmer;
-    }
 
     /**
      *
@@ -54,37 +31,19 @@ public class Switch {
     /**
      *
      * @return
-     * The SubType
+     * The Status
      */
-    public String getSubType() {
-        return SubType;
+    public String getStatus() {
+        return Status;
     }
 
     /**
      *
-     * @param SubType
-     * The SubType
+     * @param Status
+     * The Status
      */
-    public void setSubType(String SubType) {
-        this.SubType = SubType;
-    }
-
-    /**
-     *
-     * @return
-     * The Type
-     */
-    public String getType() {
-        return Type;
-    }
-
-    /**
-     *
-     * @param Type
-     * The Type
-     */
-    public void setType(String Type) {
-        this.Type = Type;
+    public void setStatus(String Status) {
+        this.Status = Status;
     }
 
     /**
@@ -105,4 +64,9 @@ public class Switch {
         this.idx = idx;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        Switch f = (Switch)o;
+        return this.getName().compareTo(f.getName());
+    }
 }

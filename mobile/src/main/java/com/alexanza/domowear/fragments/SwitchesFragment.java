@@ -38,6 +38,8 @@ public class SwitchesFragment extends ListFragment {
         if (!NetworkReachability.getInstance().isNetworkAvailable(getActivity()))
             return;
 
+        App.getApi().updateUrl(getActivity());
+
         App.getApi().getSwitchesService().listSwitches(new Callback<List<Switch>>() {
             @Override
             public void success(List list, Response response) {

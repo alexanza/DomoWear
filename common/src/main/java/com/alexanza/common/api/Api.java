@@ -47,7 +47,7 @@ public class Api {
         return toggleService;
     }
 
-    private void updateUrl(Context context) {
+    public void updateUrl(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String url = NetworkReachability.getInstance().isLocal() && !settings.getString("pref_local_url", "").isEmpty() ? settings.getString("pref_local_url", "") + ':' + settings.getString("pref_local_port", "") : settings.getString("pref_remote_url", "") + ':' + settings.getString("pref_remote_port", "");
         String protocol = "http";

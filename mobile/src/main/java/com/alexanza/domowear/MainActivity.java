@@ -45,6 +45,10 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(NetworkReachability.getInstance(), intentFilter);
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -96,18 +100,7 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        registerReceiver(NetworkReachability.getInstance(), intentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
+    protected void onDestroy() {
         unregisterReceiver(NetworkReachability.getInstance());
     }
 

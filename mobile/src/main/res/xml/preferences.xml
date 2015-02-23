@@ -56,12 +56,12 @@
             android:key="pref_remote_secure"
             android:title="@string/pref_secure_title"
             android:defaultValue="true"/>
-        <ListPreference
+        <!-- <ListPreference
             android:key="pref_remote_authentication_method"
             android:title="@string/pref_authentication_method_title"
             android:dialogTitle="@string/pref_authentication_method_title"
             android:entries="@array/pref_authentication_method_entries"
             android:entryValues="@array/pref_authentication_method_values"
-            android:defaultValue="@string/pref_authentication_method_login_form" />
+            android:defaultValue="@string/pref_authentication_method_login_form" /> -->
     </PreferenceCategory>
 </PreferenceScreen>

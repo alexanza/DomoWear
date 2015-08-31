@@ -1,14 +1,38 @@
 package com.alexanza.common.api.model;
 
 import com.google.gson.annotations.Expose;
+import com.google.android.gms.wearable.DataMap;
 
-public class Switch implements Comparable {
+import java.io.Serializable;
+
+public class Switch implements Comparable, Serializable {
     @Expose
     private String Name;
     @Expose
     private String Status;
     @Expose
     private String idx;
+
+    public Switch(String Name, String Status, String idx) {
+        this.Name = Name;
+        this.Status = Status;
+        this.idx = idx;
+    }
+
+    public Switch(DataMap map) {
+        this(
+                map.getString("Name"),
+                map.getString("Status"),
+                map.getString("idx")
+        );
+    }
+
+    public DataMap putToDataMap(DataMap map) {
+        map.getString("Name", Name);
+        map.getString("Status", Status);
+        map.putString("idx", idx);
+        return map;
+    }
 
     /**
      *

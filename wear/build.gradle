@@ -25,4 +25,5 @@ dependencies {
     compile 'com.google.android.support:wearable:1.1.0'
     compile 'com.google.android.gms:play-services-wearable:+'
     compile 'Teleport:teleportlib:0.1.4'
+    compile project(':common')
 }
